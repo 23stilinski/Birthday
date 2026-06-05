@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink-deep:    #7B2D4E;
+    --pink-dark:    #A63D6B;
+    --pink-mid:     #D4537E;
+    --pink-soft:    #E8849D;
+    --pink-blush:   #F4B8CA;
+    --pink-light:   #F9D8E4;
+    --pink-pale:    #FDF0F5;
+    --pink-rose:    #C44075;
+    --gold:         #D4A5B0;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: linear-gradient(135deg, #fdf0f5 0%, #f4b8ca 30%, #e8849d 60%, #d4537e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── petals ── */
+  .petal-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .petal {
+    position: absolute;
+    top: -60px;
+    width: 18px; height: 28px;
+    border-radius: 50% 50% 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0)   rotate(0deg)   scaleX(1); opacity: 0.85; }
+    50%  { transform: translateY(50vh) rotate(180deg) scaleX(-1); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg) scaleX(1); opacity: 0; }
+  }
+
+  /* ── circles decoration ── */
+  .bg-circle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-circle.c1 { width:480px; height:480px; background: rgba(255,255,255,0.08); top:-120px; left:-140px; }
+  .bg-circle.c2 { width:300px; height:300px; background: rgba(255,255,255,0.06); bottom:-80px; right:-80px; }
+  .bg-circle.c3 { width:160px; height:160px; background: rgba(255,255,255,0.10); top:30%; right:8%; }
+
+  /* ── SCREENS ── */
+  #name-screen, #wish-screen {
+    position: relative;
+    z-index: 10;
+    width: 100vw; height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  #wish-screen { display: none; }
+
+  /* ── name screen ── */
+  .intro-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(13px, 1.8vw, 17px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.3s forwards;
+    margin-bottom: 1.2rem;
+  }
+  .intro-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 7vw, 80px);
+    font-weight: 700;
+    color: var(--pink-deep);
+    line-height: 1.1;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s forwards;
+    margin-bottom: 2.5rem;
+  }
+  .intro-heading em {
+    font-style: italic;
+    color: var(--pink-rose);
+  }
+
+  .input-wrap {
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+    width: min(420px, 90vw);
+  }
+  .name-input {
+    width: 100%;
+    padding: 1rem 1.4rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2.5vw, 22px);
+    font-weight: 400;
+    border: none;
+    border-bottom: 2px solid var(--pink-mid);
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(6px);
+    color: var(--pink-deep);
+    outline: none;
+    border-radius: 3px 3px 0 0;
+    text-align: center;
+    transition: border-color 0.3s, background 0.3s;
+    letter-spacing: 0.04em;
+  }
+  .name-input::placeholder { color: var(--pink-soft); }
+  .name-input:focus {
+    border-color: var(--pink-deep);
+    background: rgba(255,255,255,0.75);
+  }
+
+  .wish-btn {
+    display: block;
+    margin: 2rem auto 0;
+    padding: 0.85rem 2.8rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(15px, 2vw, 19px);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, var(--pink-rose), var(--pink-dark));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(166,61,107,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.9s 1.05s forwards;
+  }
+  .wish-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(166,61,107,0.45); }
+  .wish-btn:active { transform: scale(0.97); }
+
+  /* ── wish screen ── */
+  .confetti-ring {
+    position: absolute;
+    width: min(420px, 88vw); height: min(420px, 88vw);
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.25);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ringPop 0.7s 0.1s cubic-bezier(.22,1,.36,1) forwards;
+    pointer-events: none;
+  }
+  @keyframes ringPop {
+    to { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+  }
+
+  .wish-hat {
+    font-size: clamp(42px, 8vw, 80px);
+    opacity: 0;
+    animation: popIn 0.5s 0.25s cubic-bezier(.22,1,.36,1) forwards;
+    margin-bottom: 0.4rem;
+  }
+  .wish-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(12px, 1.6vw, 15px);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.45s forwards;
+    margin-bottom: 0.5rem;
+  }
+  .wish-name {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(44px, 9vw, 110px);
+    font-weight: 400;
+    color: var(--pink-deep);
+    line-height: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.65s forwards;
+    margin-bottom: 0.15em;
+  }
+  .wish-main {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(28px, 5vw, 60px);
+    color: var(--pink-rose);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.85s forwards;
+    margin-bottom: 1.4rem;
+  }
+  .wish-message {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(14px, 2vw, 20px);
+    color: var(--pink-dark);
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.05s forwards;
+    margin-bottom: 2.4rem;
+  }
+
+  .restart-btn {
+    padding: 0.65rem 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 1.5vw, 16px);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    background: rgba(255,255,255,0.55);
+    border: 1.5px solid var(--pink-blush);
+    border-radius: 50px;
+    cursor: pointer;
+    opacity: 0;
+    animation: fadeUp 0.7s 1.3s forwards;
+    transition: background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .restart-btn:hover { background: rgba(255,255,255,0.8); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.4); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* floating hearts */
+  .hearts-layer {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    overflow: hidden;
+    display: none;
+  }
+  .heart-float {
+    position: absolute;
+    bottom: -40px;
+    font-size: 20px;
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(-10deg); opacity: 0.8; }
+    80%  { opacity: 0.6; }
+    100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-circle c1"></div>
+<div class="bg-circle c2"></div>
+<div class="bg-circle c3"></div>
+
+<!-- petals -->
+<div class="petal-layer" id="petals"></div>
+
+<!-- floating hearts (shown on wish screen) -->
+<div class="hearts-layer" id="hearts"></div>
+
+<!-- ── SCREEN 1: Enter name ── -->
+<div id="name-screen">
+  <p class="intro-tagline">A special celebration</p>
+  <h1 class="intro-heading">Someone wonderful<br>is having a <em>birthday</em></h1>
+  <div class="input-wrap">
+    <input id="nameInput" class="name-input" type="text" placeholder="What is your name?" maxlength="32" autocomplete="off" />
+  </div>
+  <button class="wish-btn" id="wishBtn" onclick="showWish()">Celebrate ✨</button>
+</div>
+
+<!-- ── SCREEN 2: Birthday wish ── -->
+<div id="wish-screen">
+  <div class="confetti-ring"></div>
+  <div class="wish-hat">🎂</div>
+  <p class="wish-sub">Wishing the most wonderful</p>
+  <div class="wish-name" id="displayName">—</div>
+  <div class="wish-main">a Happy Birthday!</div>
+  <p class="wish-message">
+    May this day be wrapped in joy, laughter, and everything<br>
+    your heart desires. You deserve every beautiful moment.
+  </p>
+  <button class="restart-btn" onclick="restart()">↩ Start again</button>
+</div>
+
+<script>
+  const PETAL_COLORS = ['#D4537E','#E8849D','#F4B8CA','#A63D6B','#F9D8E4','#C44075','#ED93B1'];
+  const petalLayer = document.getElementById('petals');
+
+  function makePetal() {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = 12 + Math.random()*18;
+    p.style.cssText = `
+      left:${Math.random()*105}%;
+      width:${size}px; height:${size*1.5}px;
+      background:${PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)]};
+      opacity:${0.5+Math.random()*0.45};
+      animation-duration:${5+Math.random()*8}s;
+      animation-delay:${Math.random()*10}s;
+      border-radius:${40+Math.random()*20}% ${40+Math.random()*20}% 50% 0;
+    `;
+    petalLayer.appendChild(p);
+    setTimeout(()=>p.remove(), 18000);
+  }
+  setInterval(makePetal, 380);
+  for(let i=0;i<14;i++) makePetal();
+
+  // hearts
+  const heartsLayer = document.getElementById('hearts');
+  function makeHeart() {
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = ['🌸','💕','🎀','🌷','💖','✨','🎊'][Math.floor(Math.random()*7)];
+    h.style.cssText = `
+      left:${Math.random()*100}%;
+      font-size:${14+Math.random()*22}px;
+      animation-duration:${5+Math.random()*7}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    heartsLayer.appendChild(h);
+    setTimeout(()=>h.remove(), 13000);
+  }
+
+  document.getElementById('nameInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') showWish();
+  });
+
+  function showWish() {
+    const raw = document.getElementById('nameInput').value.trim();
+    const name = raw || 'Lovely One';
+    document.getElementById('displayName').textContent = name;
+
+    // swap screens
+    document.getElementById('name-screen').style.display = 'none';
+    const ws = document.getElementById('wish-screen');
+    ws.style.display = 'flex';
+
+    // restart hearts
+    heartsLayer.style.display = 'block';
+    let heartInt = setInterval(makeHeart, 600);
+    setTimeout(()=>clearInterval(heartInt), 12000);
+    for(let i=0;i<8;i++) makeHeart();
+  }
+
+  function restart() {
+    heartsLayer.style.display = 'none';
+    heartsLayer.innerHTML = '';
+    document.getElementById('nameInput').value = '';
+    document.getElementById('wish-screen').style.display = 'none';
+    document.getElementById('name-screen').style.display = 'flex';
+
+    // reset animations by cloning
+    const ws = document.getElementById('wish-screen');
+    const clone = ws.cloneNode(true);
+    ws.parentNode.replaceChild(clone, ws);
+    clone.style.display = 'none';
+    clone.querySelector('.restart-btn').addEventListener('click', restart);
+    document.getElementById('displayName') // now stale ref — refresh via id below
+  }
+</script>
+</body>
+</html>
